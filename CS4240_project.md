@@ -1,8 +1,8 @@
-## Reproducibility Project
+## CS4240 Reproducibility Project
 
-### Markdown
+### *Between-class Learning for Image Classification*
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+In this project, we reproduce a learning method for image classification called between-class learning (BC learning). 
 
 ```markdown
 Syntax highlighted code block
@@ -22,12 +22,10 @@ Syntax highlighted code block
 [Link](url) and ![Image](src)
 ```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
+### Results for CIFAR 10 on 11-layer CNN
 
 Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/bbbaiqian/bbbaiqian.github.io/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
 
-### Support or Contact
+### Results for Caltech 101 on 11-layer CNN
 
 Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
