@@ -50,8 +50,18 @@ No data augmentation:
 
 | Learning method| Original paper | Our reproduction |
 |      :----:    |     :----:     |      :----:      |
-|     Standard   |   6.07 (0.04)  |    6.59 (0.15)   | 
-|        BC      |   5.40 (0.07)  |    5.67 (0.04)   |  
+|     Standard   |   9.68 (6.07)  |    9.64 (6.59)   | 
+|        BC      |   8.38 (5.40)  |    8.10 (5.67)   |  
+
+Other comparisons:
+
+|   Comparison of   |     Setting    |  Original paper  |  Our reproduction |
+|       :----       |     :----      |      :----:      |       :----:      |
+| Mixing method     |None (BC) <br> a <br> a+b <br> a+b+c (BC+) <br> b+c|5.40 <br> 5.45 <br> **5.17** <br> 5.22 <br> 5.26|5.67 <br> 5.66 <br> 5.59 <br> **5.51** <br> 5.61| 
+| Label             |Single <br> Multi <br> Ratio (proposed)|6.35 <br> 6.05 <br> **5.22**|6.60 <br> 6.45 <br> **5.51**|
+| # mixed classes   |N = 1 <br> N = 1 or 2 <br> N = 2 (proposed) <br> N = 2 or 3 <br> N = 3|5.98 <br> 5.31 <br> 5.22 <br> **5.15** <br> 5.32|6.20 <br> 5.55 <br> 5.51 <br> xx <br> xx |
+| Where to mix      |Input (proposed) <br> pool1 <br> pool2 <br> pool3 <br> fc4 <br> fc5|**5.40** <br> 5.74 <br> 6.52 <br> 6.05 <br> 6.05 <br> 6.12|5.67 <br> xx <br> xx <br> xx <br> xx <br> xx|
+
 
 ### Results for Caltech101 on 11-layer CNN
 
