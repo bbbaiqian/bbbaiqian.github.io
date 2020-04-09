@@ -35,16 +35,23 @@ Syntax highlighted code block
 
 ### Results for CIFAR-10 on 11-layer CNN
 
-the average error rate (%) of 5 or 10 trials
+the average error rate (%) and standard deviation of 5 or 10 trials:
 
 | Learning method| Original paper | Our reproduction |
 |      :----:    |     :----:     |      :----:      |
-|     Standard   |  6.07 +- 0.04  |   6.59 +_ 0.15   | 
-|        BC      |  5.40 +_ 0.07  |   5.67 +_ 0.04   | 
-|       BC+      |  5.22 +_ 0.04  |   5.51 +_ 0.11   | 
+|     Standard   |   6.07 $\pm$ 0.04  |    6.59 (0.15)   | 
+|        BC      |   5.40 (0.07)  |    5.67 (0.04)   | 
+|       BC+      |   5.22 (0.04)  |    5.51 (0.11)   | 
 
 
 ### Ablation analysis for CIFAR-10 on 11-layer CNN
+
+No data augmentation:
+
+| Learning method| Original paper | Our reproduction |
+|      :----:    |     :----:     |      :----:      |
+|     Standard   |   6.07 (0.04)  |    6.59 (0.15)   | 
+|        BC      |   5.40 (0.07)  |    5.67 (0.04)   |  
 
 ### Results for Caltech101 on 11-layer CNN
 
