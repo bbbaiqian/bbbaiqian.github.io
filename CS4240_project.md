@@ -1,6 +1,6 @@
-## CS4240 Reproducibility Project
+# CS4240 Reproducibility Project
 
-### *Between-class Learning for Image Classification*
+## *Between-class Learning for Image Classification*
 
 In this project, we reproduce a learning method for image classification called between-class learning (BC learning). 
 
