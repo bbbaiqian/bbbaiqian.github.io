@@ -38,11 +38,11 @@ Syntax highlighted code block
 the average error of 5 or 10 trials.
 
 |                |          Error rate (%) in        |
-| Learning method| Original paper | Our reproduction |
 |      :----:    |     :----:     |      :----:      |
-|     Standard   |  6.07+_ 0.04   |   6.59 +_ 0.15   | 
-|        BC      |  5.40+_ 0.07   |   5.67 +_ 0.04   | 
-|       BC+      |  5.22+_ 0.04   |   5.51 +_ 0.11   | 
+|**Learning method**|**Original paper**|**Our reproduction**|
+|     Standard   |  6.07 +- 0.04   |   6.59 +_ 0.15   | 
+|        BC      |  5.40 +_ 0.07   |   5.67 +_ 0.04   | 
+|       BC+      |  5.22 +_ 0.04   |   5.51 +_ 0.11   | 
 
 
 ### Ablation analysis for CIFAR-10 on 11-layer CNN
