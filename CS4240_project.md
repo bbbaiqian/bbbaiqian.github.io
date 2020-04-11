@@ -13,9 +13,9 @@ Table: (\#tab:tab-comp) Architecture of the 11-layer CNN
 | Layer                         |kernel size| stride    | padding   | # filters       | Data type  |
 | :---------------------------- |    :----: | :----:    |  :----:   |   :----:        |    :----:  |
 |Input                          |           |           |           |                 |  (3,32,32) |
-|conv1-1 <br> conv1-2 <br> pool1|3<br>3<br>2|1<br>1<br>2|1<br>1<br> |64<br>64<br>     | <br> <br> (64,16,16)| 
-|conv2-1 <br> conv2-2 <br> pool2|3<br>3<br>2|1<br>1<br>2|1<br>1<br> |128<br>128<br>   | <br> <br> (128,8,8)| 
-|conv3-1 <br> conv3-2 <br> conv3-3 <br> conv3-4 <br> pool3|3<br>3<br>3<br>3<br>2|1<br>1<br>1<br>1<br>2|1<br>1<br>1<br>1<br> |256<br>256<br>256<br>256<br>   | <br> <br> <br> <br>(256,4,4)|
+|conv1-1 <br> conv1-2 <br> pool1|3<br>3<br>2|1<br>1<br>2|1<br>1 |64<br>64<br>     | <br> <br> (64,16,16)| 
+|conv2-1 <br> conv2-2 <br> pool2|3<br>3<br>2|1<br>1<br>2|1<br>1 |128<br>128<br>   | <br> <br> (128,8,8)| 
+|conv3-1 <br> conv3-2 <br> conv3-3 <br> conv3-4 <br> pool3|3<br>3<br>3<br>3<br>2|1<br>1<br>1<br>1<br>2|1<br>1<br>1<br>1 |256<br>256<br>256<br>256<br>   | <br> <br> <br> <br>(256,4,4)|
 |fc4 <br> fc5 <br> fc6          |           |           |           |1024<br>1024<br># classes|(1024,)<br>(1024,)<br># classes|
 
 Besides the results mentioned above, we also reproduce all the ablation analysis for CIFAR-10, including data augmentation, mixing method, number of mixed classes, etc. Lastly, a new dataset called Caltech101 that is not mentioned in the paper is used to test this image classification method. 
