@@ -8,14 +8,14 @@ The original paper proposed two mixing methods. The first is to simply mix two i
 
 In our project, we try to reproduce the classification results for CIFAR-10 trained on a 11-layer CNN (Table 1). The reproduction consist of results for standard learning (single image with single label), BC learning (mixed image with mixed label using internal deivsions), as well as BC+ learning (mixed image with mixed label using waveform method). Moreover, instead of training with Chainer, which is used in the publicly available code of the paper, we port the original released code to PyTorch.
 
-Table: (\#tab:tab-comp) Architecture of the 11-layer CNN
+Table 1: Architecture of the 11-layer CNN
 
 | Layer                         |kernel size| stride    | padding   | # filters       | Data type  |
 | :---------------------------- |    :----: | :----:    |  :----:   |   :----:        |    :----:  |
-|Input                          |           |           |           |                 |  (3,32,32) |
-|conv1-1 <br> conv1-2 <br> pool1|3<br>3<br>2|1<br>1<br>2|1<br>1 |64<br>64<br>     | <br> <br> (64,16,16)| 
-|conv2-1 <br> conv2-2 <br> pool2|3<br>3<br>2|1<br>1<br>2|1<br>1 |128<br>128<br>   | <br> <br> (128,8,8)| 
-|conv3-1 <br> conv3-2 <br> conv3-3 <br> conv3-4 <br> pool3|3<br>3<br>3<br>3<br>2|1<br>1<br>1<br>1<br>2|1<br>1<br>1<br>1 |256<br>256<br>256<br>256<br>   | <br> <br> <br> <br>(256,4,4)|
+|Input                          |           |           |           |                 |  (3, 32, 32) |
+|conv1-1 <br> conv1-2 <br> pool1|3<br>3<br>2|1<br>1<br>2|1<br>1<br> |64<br>64<br>     | <br> <br> (64, 16, 16)| 
+|conv2-1 <br> conv2-2 <br> pool2|3<br>3<br>2|1<br>1<br>2|1<br>1<br> |128<br>128<br>   | <br> <br> (128,8,8)| 
+|conv3-1 <br> conv3-2 <br> conv3-3 <br> conv3-4 <br> pool3|3<br>3<br>3<br>3<br>2|1<br>1<br>1<br>1<br>2|1<br>1<br>1<br>1<br> |256<br>256<br>256<br>256<br>   | <br> <br> <br> <br>(256, 4, 4)|
 |fc4 <br> fc5 <br> fc6          |           |           |           |1024<br>1024<br># classes|(1024,)<br>(1024,)<br># classes|
 
 Besides the results mentioned above, we also reproduce all the ablation analysis for CIFAR-10, including data augmentation, mixing method, number of mixed classes, etc. Lastly, a new dataset called Caltech101 that is not mentioned in the paper is used to test this image classification method. 
@@ -24,24 +24,50 @@ Besides the results mentioned above, we also reproduce all the ablation analysis
 
 When porting the original Chainer code to PyTorch, we looked into the correspondences and differences between the implementation details of such two libraries. Generally, they provide similar methods for getting access to existing image datasets (e.g. CIFAR-10), constructing neural networks, realizing forward and back propagation for a given image. Correspondences of some key functions are easily found, like `optimizer.update()` in Chainer corresponding to `optimizer.step()` in PyTorch, and they will not be documented in detail here. Here we focus on the most important differences when transferring Chainer code to PyTorch, which might have implications on the reproduced classification results.
 
-* Weight initialization for fully connected layers
+* __Weight initialization for fully connected layers__
 
-The authors of this paper 
-
-```
-Syntax highlighted code block
-```
-
-* Optimization method
+The authors of this paper proposed to initialize the weights of each fully connected layer using the uniform distribution. Thus, in the original Chainer code, fully connected layers are constructed like:
 
 ```
-Syntax highlighted code block
+fc4=chainer.links.Linear(256 * 4 * 4, 1024, initialW=Uniform(1. / math.sqrt(256 * 4 * 4)))
 ```
 
-* Learning rate schedule
+However, in PyTorch, the weights are initialied as uniform distribution by default when defining a fully connected layer:
 
 ```
-Syntax highlighted code block
+fc4 = torch.nn.Linear(256 * 4 * 4, 1024)
+```
+
+Initializing the weights manually using the same distribution will cause trouble and even make the training not converge as expected.
+
+* __Optimization method__
+
+The optimizer used for this paper is _NesterovAG_ and can be simply invoked using `chainer.optimizers.NesterovAG`. When it comes to PyTorch, such explicit function for _NesterovAG_ is not found. Instead, we can generate such an optimizer through modifying the `nesterov` parameter of Stochastic Gradient Descent (SGD) method:
+
+```
+optimizer = torch.optim.SGD(params=model.parameters(), lr=opt.LR, momentum=opt.momentum,
+                                weight_decay=opt.weightDecay, nesterov=True)
+```
+
+* __Learning rate schedule__
+
+The learning rate for training is expected to be changed as the definition of its schedule. In the original Chainer implementation, a simple function is written to realize the evolution of learning rate:
+
+```
+def lr_schedule(self, epoch):
+        divide_epoch = np.array([self.opt.nEpochs * i for i in self.opt.schedule])
+        decay = sum(epoch > divide_epoch)
+        if epoch <= self.opt.warmup:
+            decay = 1
+
+        return self.opt.LR * np.power(0.1, decay)
+```
+
+However, such function works not well under PyTorch framework. Instead of changing the value of learning rate manually, we can use the learning rate scheduler for optimizers directly provided by PyTorch, as shown below.
+
+```
+epoch_milestones = numpy.array([int(self.opt.nEpochs * i) for i in self.opt.schedule]) 
+self.scheduler = torch.optim.lr_scheduler.MultiStepLR(self.optimizer, epoch_milestones, gamma=0.1) 
 ```
 
 ### Results for CIFAR-10 on 11-layer CNN
