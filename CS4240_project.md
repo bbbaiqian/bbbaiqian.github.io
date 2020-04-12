@@ -5,6 +5,7 @@
 In this project, we reproduce a learning method for image classification called between-class learning (BC learning). Basically, between-class images are generated through mixing two images from different classes with a random ratio. The aim of BC learning is to train a model which takes the mixed image as input and can output the mixing ratio. This approach is originally designed for digital signals such as sound, and the authors demonstrated that treating input data as waveforms can also work on images and further improve the generalization ability of models. 
 
 ![Figure1](https://github.com/bbbaiqian/bbbaiqian.github.io/blob/master/figs/bc_learning.png)
+
 Figure 1. Illustration of mixing two images
 
 The original paper proposed two mixing methods. The first is to simply mix two images using internal divisions, which can improve the classification results compared to using a single image and its label. The second is to treat images as waveforms and take the difference of image energies into consideration to generate ratios, which is called BC+ learning and performs even better.
@@ -27,7 +28,7 @@ Besides the results mentioned above, we also reproduced all the ablation analysi
 
 When porting the original Chainer code to PyTorch, we looked into the correspondences and differences between the implementation details of such two libraries. Generally, they provide similar methods for getting access to existing image datasets (e.g. CIFAR-10), constructing neural networks, realizing forward and back propagation for a given image. Correspondences of some key functions are easily found, like `optimizer.update()` in Chainer corresponding to `optimizer.step()` in PyTorch, and they will not be documented in detail here. Here we focus on the most important differences when transferring Chainer code to PyTorch, which might have implications on the reproduced classification results.
 
-- __Weight initialization for fully connected layers__
+1. __Weight initialization for fully connected layers__
 
 The authors of this paper proposed to initialize the weights of each fully connected layer using the uniform distribution. Thus, in the original Chainer code, fully connected layers are constructed like:
 
@@ -43,7 +44,7 @@ fc4 = torch.nn.Linear(256 * 4 * 4, 1024)
 
 Initializing the weights manually using the same distribution will cause trouble and even make the training not converge as expected.
 
-- __Optimization method__
+2. __Optimization method__
 
 The optimizer used for this paper is _NesterovAG_ and can be simply invoked using `chainer.optimizers.NesterovAG`. When it comes to PyTorch, such explicit function for _NesterovAG_ is not found. Instead, we can generate such an optimizer through modifying the `nesterov` parameter of Stochastic Gradient Descent (SGD) method:
 
@@ -52,7 +53,7 @@ optimizer = torch.optim.SGD(params=model.parameters(), lr=opt.LR, momentum=opt.m
                                 weight_decay=opt.weightDecay, nesterov=True)
 ```
 
-- __Learning rate schedule__
+3. __Learning rate schedule__
 
 The learning rate for training is expected to be changed as the definition of its schedule. In the original Chainer implementation, a simple function is written to realize the evolution of learning rate:
 
@@ -113,19 +114,14 @@ Table 4. Comparison of training using various settings. The error rate is averag
 | # mixed classes   |N = 1 <br> N = 1 or 2 <br> N = 2 (BC+) <br> N = 2 or 3 <br> N = 3|5.98 <br> 5.31 <br> 5.22 <br> **5.15** <br> 5.32|6.20 <br> 5.55 <br> 5.51 <br> 5.48 <br> xx |
 | Where to mix      |Input (BC) <br> pool1 <br> pool2 <br> pool3 <br> fc4 <br> fc5|**5.40** <br> 5.74 <br> 6.52 <br> 6.05 <br> 6.05 <br> 6.12|5.67 <br> xx <br> xx <br> xx <br> xx <br> xx|
 
-* Mixing method
 
-The differences between reproduced results for mixing methods are not as obvious as that shown in the original paper. Moreover, we achieved the best accuracy for `a+b+c`, which is just the proposed BC+ learning setting, instead of `a+b`.
+* __Mixing method__ The differences between reproduced results for mixing methods are not as obvious as that shown in the original paper. Moreover, we achieved the best accuracy for `a+b+c`, which is just the proposed BC+ learning setting, instead of `a+b`.
 
-* Label
+* __Label__ The reproduced results for using different labels are highly consistent with the original paper. Among all these labels, ratio labels that are generated through mixing two labels using a random ratio in _U_(0,1) can help to obtain the best classification performance.
 
-The reproduced results for using different labels are highly consistent with the original paper. Among all these labels, ratio labels that are generated through mixing two labels using a random ratio in _U_(0,1) can help to obtain the best classification performance.
+* __Number of mixed classes__ When experimenting with differen number of mixed classes, we also achieved similar results as the original paper. Although values of the error rate are higher to some extent, the relative order is the same. When using mixtures of three different classes in addition to the mixtures of two different classes (N = 2 or 3) can improve the performance compared to BC+ learning (N = 2), but not significantly.
 
-* Number of mixed classes
-
-When experimenting with differen number of mixed classes, we also achieved similar results as the original paper. Although values of the error rate are higher to some extent, the relative order is the same. When using mixtures of three different classes in addition to the mixtures of two different classes (N = 2 or 3) can improve the performance compared to BC+ learning (N = 2), but not significantly.
-
-* Where to mix
+* __Where to mix__
 
 ### Results for Caltech101 on 11-layer CNN
 
