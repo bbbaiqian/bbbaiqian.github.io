@@ -8,11 +8,9 @@ In this project, we reproduce a learning method for image classification called 
 
 Figure 1. Illustration of mixing two images (Figure from "*Between-class Learning for Image Classification*" by Tokozume et al.)
 
-The original paper proposed two mixing methods. The first is to simply mix two images using internal divisions, which can improve the classification results compared to using a single image and its label, as seen in Equation 1. The second is to treat images as waveforms and take the difference of image energies into consideration to generate ratios, which is called BC+ learning and performs even better. Both mixing methods can expressed with the following equations.
+The original paper proposed two mixing methods. The first is to simply mix two images using internal divisions, which can improve the classification results compared to using a single image and its label. The mixing can be expressed as ![rx_1+ (1-r)x_2](https://render.githubusercontent.com/render/math?math=rx_1%2B%20(1-r)x_2) where *r* is a random float between 0 and 1 and *x* are the images. The one-hot labels *t* are mixed in the exact corresponding way ![rt_1+ (1-r)t_2](https://render.githubusercontent.com/render/math?math=rx_1%2B%20(1-r)x_2).
 
-! [Equation 1: Simple between-class mixing (BC) of two images, the one-hot labels for the images are mixed in the exact same way.]
-(![rx_1+ (1-r)x_2](https://render.githubusercontent.com/render/math?math=rx_1%2B%20(1-r)x_2))
-
+The second is to treat images as waveforms and take the difference of image energies into consideration to generate ratios, which is called BC+ learning and performs even better. Both mixing methods can expressed with the following equations.
 
 
 In our project, we tried to reproduce the classification results for CIFAR-10 trained on a 11-layer CNN (Table 1). The reproduction consist of results for standard learning (single image with single label), BC learning (mixed image with mixed label using internal deivsions), as well as BC+ learning (mixed image with mixed label using waveform method). Moreover, instead of training with Chainer, which is used in the publicly available code of the paper, we port the original released code to PyTorch.
