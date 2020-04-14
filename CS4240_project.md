@@ -10,8 +10,8 @@ Figure 1. Illustration of mixing two images (Figure from "*Between-class Learnin
 
 The original paper proposed two mixing methods. The first is to simply mix two images using internal divisions, which can improve the classification results compared to using a single image and its label, as seen in Equation 1. The second is to treat images as waveforms and take the difference of image energies into consideration to generate ratios, which is called BC+ learning and performs even better. Both mixing methods can expressed with the following equations.
 
-Equation 1: Simple between-class mixing (BC) of two images, the one-hot labels for the images are mixed in the exact same way.
-![rx_1+ (1-r)x_2](https://render.githubusercontent.com/render/math?math=rx_1%2B%20(1-r)x_2)
+! [Equation 1: Simple between-class mixing (BC) of two images, the one-hot labels for the images are mixed in the exact same way.]
+(![rx_1+ (1-r)x_2](https://render.githubusercontent.com/render/math?math=rx_1%2B%20(1-r)x_2))
 
 
 
