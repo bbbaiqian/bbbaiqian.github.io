@@ -2,13 +2,18 @@
 
 ## _Between-class Learning for Image Classification_
 
-In this project, we reproduce a learning method for image classification called between-class learning (BC learning). Basically, between-class images are generated through mixing two images from different classes with a random ratio. The aim of BC learning is to train a model which takes the mixed image as input and can output the mixing ratio. This approach is originally designed for digital signals such as sound, and the authors demonstrated that treating input data as waveforms can also work on images and further improve the generalization ability of models. 
+In this project, we reproduce a learning method for image classification called between-class learning (BC learning) which is presented by Tokozume et al. in "*Between-class Learning for Image Classification*" (arXiv:1711.10284). Basically, between-class images are generated through mixing two images from different classes with a random ratio. The aim of BC learning is to train a model which takes the mixed image as input and can output the mixing ratio. This approach is originally designed for digital signals such as sound, and the authors demonstrated that treating input data as waveforms can also work on images and further improve the generalization ability of models. 
 
 ![Figure1](https://github.com/bbbaiqian/bbbaiqian.github.io/blob/master/figs/bc_learning.png)
 
-Figure 1. Illustration of mixing two images
+Figure 1. Illustration of mixing two images (Figure from "*Between-class Learning for Image Classification*" by Tokozume et al.)
 
-The original paper proposed two mixing methods. The first is to simply mix two images using internal divisions, which can improve the classification results compared to using a single image and its label. The second is to treat images as waveforms and take the difference of image energies into consideration to generate ratios, which is called BC+ learning and performs even better.
+The original paper proposed two mixing methods. The first is to simply mix two images using internal divisions, which can improve the classification results compared to using a single image and its label, as seen in Equation 1. The second is to treat images as waveforms and take the difference of image energies into consideration to generate ratios, which is called BC+ learning and performs even better. Both mixing methods can expressed with the following equations.
+
+Equation 1: Simple between-class mixing (BC) of two images, the one-hot labels for the images are mixed in the exact same way.
+![rx_1+ (1-r)x_2](https://render.githubusercontent.com/render/math?math=rx_1%2B%20(1-r)x_2)
+
+
 
 In our project, we tried to reproduce the classification results for CIFAR-10 trained on a 11-layer CNN (Table 1). The reproduction consist of results for standard learning (single image with single label), BC learning (mixed image with mixed label using internal deivsions), as well as BC+ learning (mixed image with mixed label using waveform method). Moreover, instead of training with Chainer, which is used in the publicly available code of the paper, we port the original released code to PyTorch.
 
