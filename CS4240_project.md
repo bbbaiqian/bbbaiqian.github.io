@@ -129,7 +129,15 @@ Table 4. Comparison of training using various settings. The error rate is averag
 
 ### Results for Caltech101 on 11-layer CNN
 
-Table 5.
+So far have we performed the same experiments as Tokozume et al. did in their paper. However, we decided to see if the between-class learning would generalise by investigating it on another dataset. In this case, we have chosen Caltech 101 and, as revealed by the name, it contains 101 different classes that represents objects such as airplanes, elephants or chairs. There is between 40 to 800 images per class and the images are around around 300x200 pixels. This is larger than the CIFAR10 dataset which contains 32x32 pixel images.
+
+For our experiments with Caltech101, we have made modifications to the experimental set-up as followingly described. Firstly, all images are resized for 224x224 pixels during training with a training to test ratio of 8:2 for each class. Moreover, we are using the same 11-layer CNN but the first fully-connected layer's input size have been set to 200704 instead. 
+
+We used 50 epochs and a batch size of 16, because of slower and more memory-intensive training compared to the CIFAR10 experiments. Also, the initial learning rate was set to 0.001 which was decreased to 0.0001 at the 30th epoch. Lastly, we set the weight decay to 0.01 but did not use any data augmentation during the training on Caltech101. 
+
+After having finished five trials each for the three different learning methods, we got the results presented in Table 5. This is the first time we can see that the BC or BC+ does not improve the image classification. In the case of BC, it even looks like the error rate is sligtly higher than for standard learning.
+
+Table 5. Training 11-layer CNN on Caltech101 with different settings. The error rate is averaged over 5 trials.
 
 | Learning method| Error rate (%) |
 |      :----:    |     :----:     |
@@ -144,3 +152,4 @@ According to the experiments on CIFAR-10 mentioned above, we can conclude that t
 As for the difference between the original and reproduced results, it can be partly explained by our usage of PyTorch, instead of Chainer used in the original paper. Indeed, PyTorch and Chainer show some differences in the implementation of several core functions, like optimizers and learning rate schedule. Moreover, the authors do not provide the code for ablation analysis, which also adds uncertainty to the reproducibility of this paper.
 
 It is also worth mentioning that the improvement of BC learning shows a limitation on image datasets. When we applied BC and BC+ mixing methods to a new dataset Caltech101, which is not included in the original paper, the classification performance was not improved. 
+
