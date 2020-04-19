@@ -2,15 +2,17 @@
 
 ## _Between-class Learning for Image Classification_
 
-In this project, we reproduce a learning method for image classification called between-class learning (BC learning). Basically, between-class images are generated through mixing two images from different classes with a random ratio. The aim of BC learning is to train a model which takes the mixed image as input and can output the mixing ratio. This approach is originally designed for digital signals such as sound, and the authors demonstrated that treating input data as waveforms can also work on images and further improve the generalization ability of models. 
+In this project, we reproduce a learning method for image classification called between-class learning (BC learning) which is presented by Tokozume et al. in "*Between-class Learning for Image Classification*" (arXiv:1711.10284). Basically, between-class images are generated through mixing two images from different classes with a random ratio. The aim of BC learning is to train a model which takes the mixed image as input and can output the mixing ratio. This approach is originally designed for digital signals such as sound, and the authors demonstrated that treating input data as waveforms can also work on images and further improve the generalization ability of models. 
 
 ![Figure1](https://github.com/bbbaiqian/bbbaiqian.github.io/blob/master/figs/bc_learning.png)
 
-Figure 1. Illustration of mixing two images
+Figure 1. Illustration of mixing two images (Figure from "*Between-class Learning for Image Classification*" by Tokozume et al.)
 
-The original paper proposed two mixing methods. The first is to simply mix two images using internal divisions, which can improve the classification results compared to using a single image and its label. The second is to treat images as waveforms and take the difference of image energies into consideration to generate ratios, which is called BC+ learning and performs even better.
+The original paper proposed two mixing methods. The first is to simply mix two images using internal divisions, which can improve the classification results compared to using a single image and its label. The mixing can be expressed as ![rx_1+ (1-r)x_2](https://render.githubusercontent.com/render/math?math=rx_1%2B%20(1-r)x_2) where *r* is a random float between 0 and 1 and *x* are the images. The one-hot labels *t* are mixed in the exact corresponding way ![rt_1+ (1-r)t_2](https://render.githubusercontent.com/render/math?math=rt_1%2B%20(1-r)t_2).
 
-In our project, we tried to reproduce the classification results for CIFAR-10 trained on a 11-layer CNN (Table 1). The reproduction consist of results for standard learning (single image with single label), BC learning (mixed image with mixed label using internal deivsions), as well as BC+ learning (mixed image with mixed label using waveform method). Moreover, instead of training with Chainer, which is used in the publicly available code of the paper, we port the original released code to PyTorch.
+The second is to treat images as waveforms and take the difference of image energies into consideration to generate ratios, which is called BC+ learning and performs even better. To understand how the mixing is done in this way, we first have to acknowledge what we mean with images being treated as waveforms. A waveform image *x* consists of two components such that ![x=d+\mu](https://render.githubusercontent.com/render/math?math=x%3Dd%2B%5Cmu) where the first term is the wave component and the second term is a static component. If we want to compare waveforms, we must remove the static component which is the same as subtracting with the per-image mean. Then, we get ![\frac{r(x_1-\mu_1) + (1-r)(x_2-\mu_2)}{\sqrt{r^2-(1-r)^2}}](https://render.githubusercontent.com/render/math?math=%5Cfrac%7Br(x_1-%5Cmu_1)%20%2B%20(1-r)(x_2-%5Cmu_2)%7D%7B%5Csqrt%7Br%5E2-(1-r)%5E2%7D%7D) where the denominator takes into account that the waveform energy is proportional with the squared amplitudes. However, there is one final adjustment where we change *r* such that the mixing looks like ![\frac{p(x_1-\mu_1) + (1-p)(x_2-\mu_2)}{\sqrt{p^2-(1-p)^2}}](https://render.githubusercontent.com/render/math?math=%5Cfrac%7Bp(x_1-%5Cmu_1)%20%2B%20(1-p)(x_2-%5Cmu_2)%7D%7B%5Csqrt%7Bp%5E2-(1-p)%5E2%7D%7D) where ![p=\frac{1}{1+\sigma_1/\sigma_2 \cdot (1-r)/r}](https://render.githubusercontent.com/render/math?math=p%3D%5Cfrac%7B1%7D%7B1%2B%5Csigma_1%2F%5Csigma_2%20%5Ccdot%20(1-r)%2Fr%7D). The reason for this change is that we ensure that the ratio ![x_1:x_2 = r:(1-r)](https://render.githubusercontent.com/render/math?math=x_1%3Ax_2%20%3D%20r%3A(1-r)) is maintained.
+
+In our project, we tried to reproduce the classification results for CIFAR-10 trained on a 11-layer CNN (Table 1). The reproduction consists of results for standard learning (single image with single label), BC learning (mixed image with mixed label using internal divsions), as well as BC+ learning (mixed image with mixed label using waveform method). Moreover, instead of training with Chainer, which is used in the publicly available code of the paper, we ported the original released code to PyTorch.
 
 Table 1: Architecture of the 11-layer CNN
 
@@ -36,7 +38,7 @@ The authors of this paper proposed to initialize the weights of each fully conne
 fc4=chainer.links.Linear(256 * 4 * 4, 1024, initialW=Uniform(1. / math.sqrt(256 * 4 * 4)))
 ```
 
-However, in PyTorch, the weights are initialied as uniform distribution by default when defining a fully connected layer:
+However, in PyTorch, the weights are initialised as uniform distribution by default when defining a fully connected layer:
 
 ```
 fc4 = torch.nn.Linear(256 * 4 * 4, 1024)
@@ -67,7 +69,7 @@ def lr_schedule(self, epoch):
         return self.opt.LR * np.power(0.1, decay)
 ```
 
-However, such function works not well under PyTorch framework. Instead of changing the value of learning rate manually, we can use the learning rate scheduler for optimizers directly provided by PyTorch, as shown below.
+However, such a function doesn't work well under PyTorch framework. Instead of changing the value of the learning rate manually, we can use the learning rate scheduler for optimizers directly provided by PyTorch, as shown below.
 
 ```
 epoch_milestones = numpy.array([int(self.opt.nEpochs * i) for i in self.opt.schedule]) 
@@ -119,7 +121,7 @@ Table 4. Comparison of training using various settings. The error rate is averag
 
 * __Label__ The reproduced results for using different labels are highly consistent with the original paper. Among all these labels, ratio labels that are generated through mixing two labels using a random ratio in _U_(0,1) can help to obtain the best classification performance.
 
-* __Number of mixed classes__ When experimenting with differen number of mixed classes, we also achieved similar results as the original paper. Although values of the error rate are higher to some extent, the relative order is the same. When using mixtures of three different classes in addition to the mixtures of two different classes (N = 2 or 3) can improve the performance compared to BC+ learning (N = 2), but not significantly.
+* __Number of mixed classes__ When experimenting with different number of mixed classes, we also achieved similar results as the original paper. Although values of the error rate are higher to some extent, the relative order is the same. Using mixtures of three different classes in addition to the mixtures of two different classes (N = 2 or 3) can improve the performance compared to BC+ learning (N = 2), but not significantly.
 
 * __Where to mix__
 
