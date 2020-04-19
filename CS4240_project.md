@@ -4,7 +4,7 @@
 
 In this project, we reproduce a learning method for image classification called between-class learning (BC learning) which is presented by Tokozume et al. in "*Between-class Learning for Image Classification*" (arXiv:1711.10284). Basically, between-class images are generated through mixing two images from different classes with a random ratio. The aim of BC learning is to train a model which takes the mixed image as input and can output the mixing ratio. This approach is originally designed for digital signals such as sound, and the authors demonstrated that treating input data as waveforms can also work on images and further improve the generalization ability of models. 
 
-![Figure1](https://github.com/bbbaiqian/bbbaiqian.github.io/blob/master/figs/bc_learning.png)
+![Figure1](https://github.com/bbbaiqian/bbbaiqian.github.io/blob/master/figs/bc_learning.png?raw=true)
 
 Figure 1. Illustration of mixing two images (Figure from "*Between-class Learning for Image Classification*" by Tokozume et al.)
 
@@ -113,8 +113,8 @@ Table 4. Comparison of training using various settings. The error rate is averag
 |       :----       |     :----      |      :----:      |       :----:      |
 | Mixing method     |None (BC) <br> a <br> a+b <br> a+b+c (BC+) <br> b+c|5.40 <br> 5.45 <br> **5.17** <br> 5.22 <br> 5.26|5.67 <br> 5.66 <br> 5.59 <br> **5.51** <br> 5.61| 
 | Label             |Single <br> Multi <br> Ratio (BC+)|6.35 <br> 6.05 <br> **5.22**|6.60 <br> 6.45 <br> **5.51**|
-| # mixed classes   |N = 1 <br> N = 1 or 2 <br> N = 2 (BC+) <br> N = 2 or 3 <br> N = 3|5.98 <br> 5.31 <br> 5.22 <br> **5.15** <br> 5.32|6.20 <br> 5.55 <br> 5.51 <br> 5.48 <br> xx |
-| Where to mix      |Input (BC) <br> pool1 <br> pool2 <br> pool3 <br> fc4 <br> fc5|**5.40** <br> 5.74 <br> 6.52 <br> 6.05 <br> 6.05 <br> 6.12|5.67 <br> xx <br> xx <br> xx <br> xx <br> xx|
+| # mixed classes   |N = 1 <br> N = 1 or 2 <br> N = 2 (BC+) <br> N = 2 or 3 <br> N = 3|5.98 <br> 5.31 <br> 5.22 <br> **5.15** <br> 5.32|6.20 <br> 5.55 <br> 5.51 <br> 5.48 <br> 5.54 |
+| Where to mix      |Input (BC) <br> pool1 <br> pool2 <br> pool3 <br> fc4 <br> fc5|**5.40** <br> 5.74 <br> 6.52 <br> 6.05 <br> 6.05 <br> 6.12|5.67 <br> **5.92** <br> 7.09 <br> 6.42 <br> 6.44 <br> 6.45|
 
 
 * __Mixing method__ The differences between reproduced results for mixing methods are not as obvious as that shown in the original paper. Moreover, we achieved the best accuracy for `a+b+c`, which is just the proposed BC+ learning setting, instead of `a+b`.
@@ -123,7 +123,7 @@ Table 4. Comparison of training using various settings. The error rate is averag
 
 * __Number of mixed classes__ When experimenting with different number of mixed classes, we also achieved similar results as the original paper. Although values of the error rate are higher to some extent, the relative order is the same. Using mixtures of three different classes in addition to the mixtures of two different classes (N = 2 or 3) can improve the performance compared to BC+ learning (N = 2), but not significantly.
 
-* __Where to mix__
+* __Where to mix__ When investigating the effect of mixing two images at different locations in the network, we found that mixing at the input layer helps to achieve the best performance, which is the same as the original paper. When mixing at the layer close to the output layer, we have also seen a drop in performance, as it shown in the original results. However, when mixing occurs at _pool1_ near the input layer, the accuracy was not improved, but reduced significantly.
 
 ### Results for Caltech101 on 11-layer CNN
 
@@ -131,6 +131,6 @@ Table 5.
 
 | Learning method| Error rate (%) |
 |      :----:    |     :----:     |
-|     Standard   |                | 
-|        BC      |                | 
-|       BC+      |                |
+|     Standard   |  35.76 ± 1.12  | 
+|        BC      |  36.59 ± 0.93  |
+|       BC+      |  35.65 ± 0.54  |
