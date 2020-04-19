@@ -111,7 +111,7 @@ Table 4. Comparison of training using various settings. The error rate is averag
 |       :----       |     :----      |      :----:      |       :----:      |
 | Mixing method     |None (BC) <br> a <br> a+b <br> a+b+c (BC+) <br> b+c|5.40 <br> 5.45 <br> **5.17** <br> 5.22 <br> 5.26|5.67 <br> 5.66 <br> 5.59 <br> **5.51** <br> 5.61| 
 | Label             |Single <br> Multi <br> Ratio (BC+)|6.35 <br> 6.05 <br> **5.22**|6.60 <br> 6.45 <br> **5.51**|
-| # mixed classes   |N = 1 <br> N = 1 or 2 <br> N = 2 (BC+) <br> N = 2 or 3 <br> N = 3|5.98 <br> 5.31 <br> 5.22 <br> **5.15** <br> 5.32|6.20 <br> 5.55 <br> 5.51 <br> 5.48 <br> xx |
+| # mixed classes   |N = 1 <br> N = 1 or 2 <br> N = 2 (BC+) <br> N = 2 or 3 <br> N = 3|5.98 <br> 5.31 <br> 5.22 <br> **5.15** <br> 5.32|6.20 <br> 5.55 <br> 5.51 <br> 5.48 <br> 5.54 |
 | Where to mix      |Input (BC) <br> pool1 <br> pool2 <br> pool3 <br> fc4 <br> fc5|**5.40** <br> 5.74 <br> 6.52 <br> 6.05 <br> 6.05 <br> 6.12|5.67 <br> xx <br> xx <br> xx <br> xx <br> xx|
 
 
@@ -130,5 +130,5 @@ Table 5.
 | Learning method| Error rate (%) |
 |      :----:    |     :----:     |
 |     Standard   |                | 
-|        BC      |                | 
+|        BC      |  36.60 ± 0.95  | 
 |       BC+      |                |
