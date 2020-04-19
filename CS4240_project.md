@@ -2,6 +2,8 @@
 
 ## _Between-class Learning for Image Classification_
 
+_Erik Handberg, Rickard Karlsson, Qian Bai_
+
 In this project, we reproduce a learning method for image classification called between-class learning (BC learning) which is presented by Tokozume et al. in "*Between-class Learning for Image Classification*" (arXiv:1711.10284). Basically, between-class images are generated through mixing two images from different classes with a random ratio. The aim of BC learning is to train a model which takes the mixed image as input and can output the mixing ratio. This approach is originally designed for digital signals such as sound, and the authors demonstrated that treating input data as waveforms can also work on images and further improve the generalization ability of models. 
 
 ![Figure1](https://github.com/bbbaiqian/bbbaiqian.github.io/blob/master/figs/bc_learning.png?raw=true)
@@ -113,8 +115,8 @@ Table 4. Comparison of training using various settings. The error rate is averag
 |       :----       |     :----      |      :----:      |       :----:      |
 | Mixing method     |None (BC) <br> a <br> a+b <br> a+b+c (BC+) <br> b+c|5.40 <br> 5.45 <br> **5.17** <br> 5.22 <br> 5.26|5.67 <br> 5.66 <br> 5.59 <br> **5.51** <br> 5.61| 
 | Label             |Single <br> Multi <br> Ratio (BC+)|6.35 <br> 6.05 <br> **5.22**|6.60 <br> 6.45 <br> **5.51**|
-| # mixed classes   |N = 1 <br> N = 1 or 2 <br> N = 2 (BC+) <br> N = 2 or 3 <br> N = 3|5.98 <br> 5.31 <br> 5.22 <br> **5.15** <br> 5.32|6.20 <br> 5.55 <br> 5.51 <br> 5.48 <br> 5.54 |
-| Where to mix      |Input (BC) <br> pool1 <br> pool2 <br> pool3 <br> fc4 <br> fc5|**5.40** <br> 5.74 <br> 6.52 <br> 6.05 <br> 6.05 <br> 6.12|5.67 <br> **5.92** <br> 7.09 <br> 6.42 <br> 6.44 <br> 6.45|
+| # mixed classes   |N = 1 <br> N = 1 or 2 <br> N = 2 (BC+) <br> N = 2 or 3 <br> N = 3|5.98 <br> 5.31 <br> 5.22 <br> **5.15** <br> 5.32|6.20 <br> 5.55 <br> 5.51 <br> **5.48** <br> 5.54 |
+| Where to mix      |Input (BC) <br> pool1 <br> pool2 <br> pool3 <br> fc4 <br> fc5|**5.40** <br> 5.74 <br> 6.52 <br> 6.05 <br> 6.05 <br> 6.12|**5.67** <br> 5.92 <br> 7.09 <br> 6.42 <br> 6.44 <br> 6.45|
 
 
 * __Mixing method__ The differences between reproduced results for mixing methods are not as obvious as that shown in the original paper. Moreover, we achieved the best accuracy for `a+b+c`, which is just the proposed BC+ learning setting, instead of `a+b`.
@@ -123,7 +125,7 @@ Table 4. Comparison of training using various settings. The error rate is averag
 
 * __Number of mixed classes__ When experimenting with different number of mixed classes, we also achieved similar results as the original paper. Although values of the error rate are higher to some extent, the relative order is the same. Using mixtures of three different classes in addition to the mixtures of two different classes (N = 2 or 3) can improve the performance compared to BC+ learning (N = 2), but not significantly.
 
-* __Where to mix__ When investigating the effect of mixing two images at different locations in the network, we found that mixing at the input layer helps to achieve the best performance, which is the same as the original paper. When mixing at the layer close to the output layer, we have also seen a drop in performance, as it shown in the original results. However, when mixing occurs at _pool1_ near the input layer, the accuracy was not improved, but reduced significantly.
+* __Where to mix__ When investigating the effect of mixing two images at different locations in the network, we drew the same conclusion as the original paper. That is, mixing at the input layer helps to achieve the best performance, and mixing at _pool1_ near the input layer can improve the accuracy as well. When mixing at the layer at the middle point or close to the output layer, we have also seen a drop in performance.
 
 ### Results for Caltech101 on 11-layer CNN
 
@@ -134,3 +136,11 @@ Table 5.
 |     Standard   |  35.76 ± 1.12  | 
 |        BC      |  36.59 ± 0.93  |
 |       BC+      |  35.65 ± 0.54  |
+
+### Discussion
+
+According to the experiments on CIFAR-10 mentioned above, we can conclude that the original paper is generally reproducible. Although we did not achieve the same error rates, relative relations among the original results under different settings are still kept in our reproduction. 
+
+As for the difference between the original and reproduced results, it can be partly explained by our usage of PyTorch, instead of Chainer used in the original paper. Indeed, PyTorch and Chainer show some differences in the implementation of several core functions, like optimizers and learning rate schedule. Moreover, the authors do not provide the code for ablation analysis, which also adds uncertainty to the reproducibility of this paper.
+
+It is also worth mentioning that the improvement of BC learning shows a limitation on image datasets. When we applied BC and BC+ mixing methods to a new dataset Caltech101, which is not included in the original paper, the classification performance was not improved. 
