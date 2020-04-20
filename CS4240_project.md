@@ -2,7 +2,7 @@
 
 ## _Between-class Learning for Image Classification_
 
-_Erik Handberg (5202647), Rickard Karlsson (5200792), Qian Bai (5098750)_
+_Erik Handberg, Rickard Karlsson, Qian Bai_
 
 In this project, we reproduce a learning method for image classification called between-class learning (BC learning) which is presented by Tokozume et al. in "*Between-class Learning for Image Classification*" (arXiv:1711.10284). Basically, between-class images are generated through mixing two images from different classes with a random ratio. The aim of BC learning is to train a model which takes the mixed image as input and can output the mixing ratio. This approach is originally designed for digital signals such as sound, and the authors demonstrated that treating input data as waveforms can also work on images and further improve the generalization ability of models. Our code for this reproduction can be found [here](https://github.com/RickardKarl/bc_learning_image).
 
