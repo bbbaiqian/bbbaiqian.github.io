@@ -124,7 +124,7 @@ Table 4. Comparison of training using various settings. The error rate is averag
 | Mixing method     |None (BC) <br> a <br> a+b <br> a+b+c (BC+) <br> b+c|5.40 <br> 5.45 <br> **5.17** <br> 5.22 <br> 5.26|5.67 <br> 5.66 <br> 5.59 <br> **5.51** <br> 5.61| 
 | Label             |Single <br> Multi <br> Ratio (BC+)|6.35 <br> 6.05 <br> **5.22**|6.60 <br> 6.45 <br> **5.51**|
 | # mixed classes   |N = 1 <br> N = 1 or 2 <br> N = 2 (BC+) <br> N = 2 or 3 <br> N = 3|5.98 <br> 5.31 <br> 5.22 <br> **5.15** <br> 5.32|6.20 <br> 5.55 <br> 5.51 <br> **5.48** <br> 5.54 |
-| Where to mix      |Input (BC) <br> pool1 <br> pool2 <br> pool3 <br> fc4 <br> fc5|**5.40** <br> 5.74 <br> 6.52 <br> 6.05 <br> 6.05 <br> 6.12|**5.67** <br> 5.92 <br> 7.09 <br> 6.42 <br> 6.44 <br> 6.45|
+| Where to mix      |Input (BC) <br> pool1 <br> pool2 <br> pool3 <br> fc4 <br> fc5|**5.40** <br> 5.74 <br> 6.52 <br> 6.05 <br> 6.05 <br> 6.12|**5.67** <br> 6.00 <br> 7.09 <br> 6.42 <br> 6.44 <br> 6.45|
 
 
 * __Mixing method__ The differences between reproduced results for mixing methods are not as obvious as that shown in the original paper. Moreover, we achieved the best accuracy for `a+b+c`, which is just the proposed BC+ learning setting, instead of `a+b`.
@@ -137,7 +137,15 @@ Table 4. Comparison of training using various settings. The error rate is averag
 
 ### Results for Caltech101 on 11-layer CNN
 
-Table 5.
+So far have we performed the same experiments as Tokozume et al. did in their paper. However, we decided to see if the between-class learning would generalise by investigating it on another dataset. In this case, we have chosen Caltech 101 and, as revealed by the name, it contains 101 different classes that represents objects such as airplanes, elephants or chairs. There is between 40 to 800 images per class and the images are around around 300x200 pixels. This is larger than the CIFAR10 dataset which contains 32x32 pixel images.
+
+For our experiments with Caltech101, we have made modifications to the experimental set-up as followingly described. Firstly, all images are resized for 224x224 pixels during training with a training to test ratio of 8:2 for each class. Moreover, we are using the same 11-layer CNN but the first fully-connected layer's input size have been set to 200704 instead. 
+
+We used 50 epochs and a batch size of 16, because of slower and more memory-intensive training compared to the CIFAR10 experiments. Also, the initial learning rate was set to 0.001 which was decreased to 0.0001 at the 30th epoch. Lastly, we set the weight decay to 0.01 but did not use any data augmentation during the training on Caltech101. 
+
+After having finished five trials each for the three different learning methods, we got the results presented in Table 5. This is the first time we can see that the BC or BC+ does not improve the image classification. In the case of BC, it even looks like the error rate is sligtly higher than for standard learning.
+
+Table 5. Training 11-layer CNN on Caltech101 with different settings. The error rate is averaged over 5 trials.
 
 | Learning method| Error rate (%) |
 |      :----:    |     :----:     |
@@ -152,3 +160,4 @@ According to the experiments on CIFAR-10 mentioned above, we can conclude that t
 As for the difference between the original and reproduced results, it can be partly explained by our usage of PyTorch, instead of Chainer used in the original paper. Indeed, PyTorch and Chainer show some differences in the implementation of several core functions, like optimizers and learning rate schedule. Moreover, the authors do not provide the code for ablation analysis, which also adds uncertainty to the reproducibility of this paper.
 
 It is also worth mentioning that the improvement of BC learning shows a limitation on image datasets. When we applied BC and BC+ mixing methods to a new dataset Caltech101, which is not included in the original paper, the classification performance was not improved. 
+
