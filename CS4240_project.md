@@ -37,13 +37,14 @@ When porting the original Chainer code to PyTorch, we looked into the correspond
 The authors of this paper proposed to initialize the weights of each fully connected layer using the uniform distribution. Thus, in the original Chainer code, fully connected layers are constructed like:
 
 ```
-fc4=chainer.links.Linear(256 * 4 * 4, 1024, initialW=Uniform(1. / math.sqrt(256 * 4 * 4)))
+fc4=chainer.links.Linear(256*4*4, 1024, 
+	initialW=Uniform(1./math.sqrt(256*4*4)))
 ```
 
 However, in PyTorch, the weights are initialised as uniform distribution by default when defining a fully connected layer:
 
 ```
-fc4 = torch.nn.Linear(256 * 4 * 4, 1024)
+fc4 = torch.nn.Linear(256*4*4, 1024)
 ```
 
 Initializing the weights manually using the same distribution will cause trouble and even make the training not converge as expected.
@@ -53,8 +54,11 @@ Initializing the weights manually using the same distribution will cause trouble
 The optimizer used for this paper is _NesterovAG_ and can be simply invoked using `chainer.optimizers.NesterovAG`. When it comes to PyTorch, such explicit function for _NesterovAG_ is not found. Instead, we can generate such an optimizer through modifying the `nesterov` parameter of Stochastic Gradient Descent (SGD) method:
 
 ```
-optimizer = torch.optim.SGD(params=model.parameters(), lr=opt.LR, momentum=opt.momentum,
-                                weight_decay=opt.weightDecay, nesterov=True)
+optimizer = torch.optim.SGD(params=model.parameters(), 
+                                            lr=opt.LR, 
+                                momentum=opt.momentum,
+                         weight_decay=opt.weightDecay, 
+                                        nesterov=True)
 ```
 
 3. __Learning rate schedule__
@@ -63,19 +67,23 @@ The learning rate for training is expected to be changed as the definition of it
 
 ```
 def lr_schedule(self, epoch):
-        divide_epoch = np.array([self.opt.nEpochs * i for i in self.opt.schedule])
-        decay = sum(epoch > divide_epoch)
-        if epoch <= self.opt.warmup:
-            decay = 1
+    divide_epoch = np.array([self.opt.nEpochs * i
+    	                     for i in self.opt.schedule])
+    decay = sum(epoch > divide_epoch)
+    if epoch <= self.opt.warmup:
+        decay = 1
 
-        return self.opt.LR * np.power(0.1, decay)
+    return self.opt.LR * np.power(0.1, decay)
 ```
 
 However, such a function doesn't work well under PyTorch framework. Instead of changing the value of the learning rate manually, we can use the learning rate scheduler for optimizers directly provided by PyTorch, as shown below.
 
 ```
-epoch_milestones = numpy.array([int(self.opt.nEpochs * i) for i in self.opt.schedule]) 
-self.scheduler = torch.optim.lr_scheduler.MultiStepLR(self.optimizer, epoch_milestones, gamma=0.1) 
+epoch_milestones=numpy.array([int(self.opt.nEpochs * i) 
+                                for i in self.opt.schedule]) 
+scheduler=torch.optim.lr_scheduler.MultiStepLR(self.optimizer, 
+	                                         epoch_milestones, 
+	                                                gamma=0.1) 
 ```
 
 ### Results for CIFAR-10 on 11-layer CNN
