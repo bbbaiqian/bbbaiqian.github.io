@@ -161,3 +161,4 @@ As for the difference between the original and reproduced results, it can be par
 
 It is also worth mentioning that the improvement of BC learning shows a limitation on image datasets. When we applied BC and BC+ mixing methods to a new dataset Caltech101, which is not included in the original paper, the classification performance was not improved. 
 
+At last, if you enjoyed reading about this reproduction or if you found it useful, then we have some good news for you. Many blog posts which also reproduces other research papers have been gathered at [https://reproducedpapers.org](https://reproducedpapers.org) which is hosted by TU Delft. Check out the link if you are interested. 
