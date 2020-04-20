@@ -68,7 +68,7 @@ The learning rate for training is expected to be changed as the definition of it
 ```
 def lr_schedule(self, epoch):
     divide_epoch = np.array([self.opt.nEpochs * i
-    	                     for i in self.opt.schedule])
+    	                    for i in self.opt.schedule])
     decay = sum(epoch > divide_epoch)
     if epoch <= self.opt.warmup:
         decay = 1
@@ -80,10 +80,10 @@ However, such a function doesn't work well under PyTorch framework. Instead of c
 
 ```
 epoch_milestones=numpy.array([int(self.opt.nEpochs * i) 
-                                for i in self.opt.schedule]) 
-scheduler=torch.optim.lr_scheduler.MultiStepLR(self.optimizer, 
-	                                         epoch_milestones, 
-	                                                gamma=0.1) 
+                             for i in self.opt.schedule]) 
+scheduler=torch.optim.lr_scheduler.MultiStepLR(optimizer, 
+	                                    epoch_milestones, 
+	                                           gamma=0.1) 
 ```
 
 ### Results for CIFAR-10 on 11-layer CNN
