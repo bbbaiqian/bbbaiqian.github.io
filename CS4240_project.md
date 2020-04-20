@@ -153,7 +153,7 @@ Table 5. Training 11-layer CNN on Caltech101 with different settings. The error 
 |        BC      |  36.59 ± 0.93  |
 |       BC+      |  35.65 ± 0.54  |
 
-### Discussion
+### Discussion & Conclusion
 
 According to the experiments on CIFAR-10 mentioned above, we can conclude that the original paper is generally reproducible. Although we did not achieve the same error rates, relative relations among the original results under different settings are still kept in our reproduction. 
 
