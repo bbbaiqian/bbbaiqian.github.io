@@ -32,7 +32,7 @@ Besides the results mentioned above, we also reproduced all the ablation analysi
 
 When porting the original Chainer code to PyTorch, we looked into the correspondences and differences between the implementation details of such two libraries. Generally, they provide similar methods for getting access to existing image datasets (e.g. CIFAR-10), constructing neural networks, realizing forward and back propagation for a given image. Correspondences of some key functions are easily found, like `optimizer.update()` in Chainer corresponding to `optimizer.step()` in PyTorch, and they will not be documented in detail here. Here we focus on the most important differences when transferring Chainer code to PyTorch, which might have implications on the reproduced classification results.
 
-1. __Weight initialization for fully connected layers__
+* __Weight initialization for fully connected layers__
 
 The authors of this paper proposed to initialize the weights of each fully connected layer using the uniform distribution. Thus, in the original Chainer code, fully connected layers are constructed like:
 
@@ -49,7 +49,7 @@ fc4 = torch.nn.Linear(256*4*4, 1024)
 
 Initializing the weights manually using the same distribution will cause trouble and even make the training not converge as expected.
 
-2. __Optimization method__
+* __Optimization method__
 
 The optimizer used for this paper is _NesterovAG_ and can be simply invoked using `chainer.optimizers.NesterovAG`. When it comes to PyTorch, such explicit function for _NesterovAG_ is not found. Instead, we can generate such an optimizer through modifying the `nesterov` parameter of Stochastic Gradient Descent (SGD) method:
 
@@ -61,7 +61,7 @@ optimizer = torch.optim.SGD(params=model.parameters(),
                                         nesterov=True)
 ```
 
-3. __Learning rate schedule__
+* __Learning rate schedule__
 
 The learning rate for training is expected to be changed as the definition of its schedule. In the original Chainer implementation, a simple function is written to realize the evolution of learning rate:
 
